@@ -1,0 +1,23 @@
+-----  Default external/internal encodings (UTF8 and nil, despite magic comment and flags)  -----
+  external encoding          | #<Encoding:UTF-8>
+  internal encoding          | nil
+
+-----  File system says it is iso-8859-1, but reads in as UTF-8  -----
+  file system says:          | "iso-8859-1"
+  file                       | "\xE7\n" #<Encoding:UTF-8>
+
+-----  It isn't a valid UTF-8 file b/c, you know, it's not UTF-8...  -----
+  exception when matching    | #<ArgumentError: invalid byte sequence in UTF-8>
+
+-----  Forcing the encoding causes gives a hex representation and regexp doesn't match  -----
+  after forcing              | "\xE7\n" #<Encoding:ISO-8859-1>
+  regexp doesn't match       | nil
+
+-----  Force and then converting makes it human readable, but regex is still confused  -----
+  after forcing & converting | "ç\n" #<Encoding:UTF-8>
+  regexp still doesn't match | nil
+
+-----  Comparing representations  -----
+  original file              | "\xE7\n" [231, 10]       #<Encoding:UTF-8>
+  forced encoding            | "\xE7\n" [231, 10]       #<Encoding:ISO-8859-1>
+  converted file             | "ç\n"    [195, 167, 10]  #<Encoding:UTF-8>
